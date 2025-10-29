@@ -40,7 +40,6 @@ function DashboardPage() {
 
   return (
     <>
-      {/* Admin Header */}
       <header className="admin-header">
         <h1 id="welcome-message">Expense Dashboard</h1>
         <nav>
@@ -60,34 +59,30 @@ function DashboardPage() {
         </nav>
       </header>
 
-      {/* Admin Container */}
       <main className="admin-container">
-        {/* Stats Grid for Summary */}
         {summary && (
           <section className="stats-grid">
-            <div className="stat-card fees"> {/* fees = red border */}
+            <div className="stat-card fees">
               <h2>Total Spent (Your Share)</h2>
-              <p>${summary.totalSpent.toFixed(2)}</p>
+              <p>₹{summary.totalSpent.toFixed(2)}</p>
             </div>
-            <div className="stat-card complaints"> {/* complaints = yellow border */}
+            <div className="stat-card complaints">
               <h2>Average Expense</h2>
-              <p>${summary.averageExpense.toFixed(2)}</p>
+              <p>₹{summary.averageExpense.toFixed(2)}</p>
             </div>
-            <div className="stat-card students"> {/* students = blue border */}
+            <div className="stat-card students">
               <h2>Total Expenses</h2>
               <p>{summary.totalExpenses}</p>
             </div>
           </section>
         )}
 
-        {/* Chart in its own container */}
         {summary && summary.chart.labels.length > 0 && (
           <div className="chart-container">
             <ExpenseChart chartData={summary.chart} />
           </div>
         )}
 
-        {/* Data Section for Expenses List */}
         <section className="data-section" style={{ marginTop: '30px' }}>
           <h2>Recent Expenses</h2>
           <div className="table-container">
@@ -111,10 +106,10 @@ function DashboardPage() {
                       <td>{new Date(exp.date).toLocaleDateString()}</td>
                       <td>{exp.description}</td>
                       <td>{exp.category}</td>
-                      <td>${exp.amount.toFixed(2)}</td>
+                      <td>₹{exp.amount.toFixed(2)}</td>
                       <td>{exp.user.name}</td>
                       <td>
-                        {exp.split_with.length > 0 ? `$${exp.split_share.toFixed(2)}` : 'N/A'}
+                        {exp.split_with.length > 0 ? `₹${exp.split_share.toFixed(2)}` : 'N/A'}
                       </td>
                     </tr>
                   ))

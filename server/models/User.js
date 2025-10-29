@@ -1,7 +1,7 @@
 // File: server/models/User.js
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken'; // Import jwt here
+import jwt from 'jsonwebtoken';
 
 const UserSchema = new mongoose.Schema({
   name: {
@@ -12,20 +12,19 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please add a username'],
     unique: true,
-    lowercase: true, // Good practice
-    trim: true,      // Good practice
+    lowercase: true,
+    trim: true,
   },
   password: {
     type: String,
     required: [true, 'Please add a password'],
     minlength: 6,
-    select: false, // Don't return password by default on queries
+    select: false, // Don't return password by default
   },
-}, { timestamps: true }); // Adds createdAt and updatedAt
+}, { timestamps: true });
 
-// Middleware: Encrypt password using bcrypt before saving
+// Encrypt password using bcrypt
 UserSchema.pre('save', async function (next) {
-  // Only hash the password if it has been modified (or is new)
   if (!this.isModified('password')) {
     return next();
   }
@@ -34,18 +33,18 @@ UserSchema.pre('save', async function (next) {
     this.password = await bcrypt.hash(this.password, salt);
     next();
   } catch (error) {
-    next(error); // Pass errors to the next middleware/handler
+    next(error);
   }
 });
 
-// Method: Sign JWT and return
+// Sign JWT and return
 UserSchema.methods.getSignedJwtToken = function () {
   return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
-    expiresIn: '30d', // Token expires in 30 days
+    expiresIn: '30d',
   });
 };
 
-// Method: Match user entered password to hashed password in database
+// Match user entered password to hashed password in database
 UserSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };

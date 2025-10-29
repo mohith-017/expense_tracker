@@ -56,7 +56,6 @@ function AddExpensePage() {
       <main className="admin-container">
         <section className="data-section">
           <h2>Expense Details</h2>
-          {/* We use .form-section so our index.css can style the inputs */}
           <div className="form-section">
             <form onSubmit={handleSubmit}>
               <div>
@@ -69,7 +68,7 @@ function AddExpensePage() {
                 />
               </div>
               <div>
-                <label>Amount ($):</label>
+                <label>Amount (₹):</label>
                 <input
                   type="number"
                   step="0.01"
@@ -105,7 +104,7 @@ function AddExpensePage() {
                 <label>Split with usernames (comma-separated):</label>
                 <input
                   type="text"
-                  placeholder="e.g., user2, user3"
+                  placeholder="e.g., harish, preetham123"
                   value={splitWith}
                   onChange={(e) => setSplitWith(e.target.value)}
                 />

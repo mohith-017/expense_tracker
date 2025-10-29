@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 const ExpenseSchema = new Schema({
-  user: { // The user who created/paid for the expense
+  user: {
     type: Schema.Types.ObjectId,
     ref: 'User',
     required: true,
@@ -26,18 +26,16 @@ const ExpenseSchema = new Schema({
     type: Date,
     default: Date.now,
   },
-  // Simple split logic:
-  split_with: [ // Array of User ObjectIds involved in the split (excluding creator)
+  split_with: [
     {
       type: Schema.Types.ObjectId,
       ref: 'User',
     },
   ],
-  split_share: { // The calculated amount each person owes (including creator)
+  split_share: {
     type: Number,
-    // Required only if split_with has entries, but simpler to leave optional
   },
-}, { timestamps: true }); // Adds createdAt and updatedAt
+}, { timestamps: true });
 
 const Expense = mongoose.model('Expense', ExpenseSchema);
 
