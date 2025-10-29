@@ -1,0 +1,97 @@
+/* File: client/src/index.css */
+
+/* Base styles for the "admin" (dark) layout */
+body.admin-layout {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(120deg, #334155, #1e293b); /* Dark Slate Gradient */
+  background-attachment: fixed;
+  color: #cbd5e1; /* Light grey text default */
+  margin: 0;
+}
+
+/* Base styles for the "login" (light) layout */
+body.login-layout {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+  color: #1e293b; /* Dark Slate */
+  background: linear-gradient(120deg, #e0f2fe 0%, #7dd3fc 50%, #0ea5e9 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+/* Fix for Chart.js container on dark background */
+.chart-container {
+  background: rgba(255, 255, 255, 0.1); /* Dark frost */
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  margin-top: 30px;
+}
+
+/* Form styles for dark admin layout */
+/* We target .form-section inside .admin-container */
+.admin-container .form-section input,
+.admin-container .form-section select,
+.admin-container .form-section textarea {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 14px;
+    margin: 10px 0;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    /* Light background, dark text for readability */
+    background-color: rgba(255, 255, 255, 0.7); 
+    color: #1e293b;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.admin-container .form-section input::placeholder,
+.admin-container .form-section textarea::placeholder {
+  color: #4b5563;
+}
+
+.admin-container .form-section input:focus,
+.admin-container .form-section select:focus,
+.admin-container .form-section textarea:focus {
+  outline: none;
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.3);
+}
+
+.admin-container .form-section label {
+  display: block;
+  text-align: left;
+  font-weight: 600;
+  margin-top: 10px;
+  color: #f1f5f9; /* Light label text */
+}
+
+/* Button overrides for admin section */
+.admin-container .form-section button {
+    width: 100%;
+    padding: 14px;
+    background-color: #075985;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 16px;
+    margin-top: 15px;
+    transition: background-color 0.3s;
+}
+
+.admin-container .form-section button:hover:not(:disabled) {
+  background-color: #38bdf8;
+}
+
+.admin-container .form-section button:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}

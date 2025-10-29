@@ -1,0 +1,153 @@
+/* File: client/src/assets/style.css */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+:root {
+  --primary-color: #075985;
+  --secondary-color: #38bdf8;
+  --accent-color: #7dd3fc;
+  --success-color: #22c55e;
+  --error-color: #ef4444;
+  --warning-color: #f59e0b;
+  --info-color: #0ea5e9;
+  --light-text: #f8fafc;
+  --dark-text: #1e293b;
+  --border-color: rgba(255, 255, 255, 0.3);
+  --frost-background: rgba(255, 255, 255, 0.25);
+  --frost-background-input: rgba(255, 255, 255, 0.6);
+  --frost-blur: 8px;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+  color: var(--dark-text);
+  background: linear-gradient(120deg, #e0f2fe 0%, #7dd3fc 50%, #0ea5e9 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+.frost-container {
+  background: var(--frost-background);
+  border-radius: 16px;
+  padding: 30px 40px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(var(--frost-blur));
+  -webkit-backdrop-filter: blur(var(--frost-blur));
+}
+
+.login-page-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.auth-box {
+  max-width: 400px;
+  width: 100%;
+}
+
+.form-section {
+  text-align: center;
+}
+
+.form-section h2 {
+  color: var(--primary-color);
+  font-weight: 700;
+  margin-bottom: 25px;
+}
+
+.form-section input {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 14px;
+  margin: 10px 0;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  background-color: var(--frost-background-input);
+  color: var(--dark-text);
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-section input::placeholder {
+  color: #4b5563;
+}
+
+.form-section input:focus {
+  outline: none;
+  border-color: var(--secondary-color);
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.3);
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  background-color: var(--primary-color);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 16px;
+  margin-top: 15px;
+  transition: background-color 0.3s;
+}
+
+button:hover:not(:disabled) {
+  background-color: var(--secondary-color);
+}
+
+button:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.form-section p {
+  color: var(--primary-color);
+  margin-top: 15px;
+}
+
+.form-section a {
+  color: var(--secondary-color);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.form-section a:hover {
+  text-decoration: underline;
+}
+
+.hidden {
+  display: none !important;
+}
+
+#message {
+  margin-top: 15px;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 12px 15px;
+  border-radius: 6px;
+  display: none;
+  color: white;
+  text-align: center;
+}
+
+#message.success {
+  background-color: rgba(34, 197, 94, 0.8);
+  display: block;
+}
+
+#message.error {
+  background-color: rgba(239, 68, 68, 0.8);
+  display: block;
+}
+
+#message.info {
+  background-color: rgba(14, 165, 233, 0.8);
+  display: block;
+}
