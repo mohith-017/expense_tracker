@@ -1,18 +1,17 @@
 // File: server/controllers/expenseController.js
-const Expense = require('../models/Expense');
-const User = require('../models/User');
+import Expense from '../models/Expense.js'; // Added .js
+import User from '../models/User.js';       // Added .js
 
-// @desc    Get all expenses for logged in user
+// @desc    Get all expenses for logged in user (creator or involved in split)
 // @route   GET /api/expenses
-exports.getExpenses = async (req, res, next) => {
+const getExpenses = async (req, res, next) => {
   try {
-    // Find expenses where the user is the creator OR is in the 'split_with' array
     const expenses = await Expense.find({
       $or: [{ user: req.user.id }, { split_with: req.user.id }],
     })
       .populate('user', 'name username') // Populate creator's info
-      .populate('split_with', 'name username') // Populate splitters' info
-      .sort({ date: -1 });
+      .populate('split_with', 'name username') // Populate info of users in split_with
+      .sort({ date: -1 }); // Sort by date descending (most recent first)
 
     res.status(200).json({
       success: true,
@@ -20,52 +19,86 @@ exports.getExpenses = async (req, res, next) => {
       data: expenses,
     });
   } catch (err) {
-    res.status(500).json({ success: false, error: 'Server Error' });
+    console.error("Get Expenses Error:", err);
+    res.status(500).json({ success: false, error: 'Server Error fetching expenses' });
   }
 };
 
 // @desc    Add new expense
 // @route   POST /api/expenses
-exports.addExpense = async (req, res, next) => {
+const addExpense = async (req, res, next) => {
   try {
     const { amount, category, description, date, split_with_usernames } = req.body;
 
-    let splitWithUserIds = [];
-    let splitShare = amount;
-
-    // --- Simple Split Logic ---
-    // 'split_with_usernames' is an array of strings (usernames) from the client
-    if (split_with_usernames && split_with_usernames.length > 0) {
-      
-      // Find the User IDs for each username
-      const usersToSplitWith = await User.find({
-        username: { $in: split_with_usernames },
-      });
-      splitWithUserIds = usersToSplitWith.map((user) => user._id);
-
-      // Add the creator to the split list
-      const allSplitters = [...splitWithUserIds, req.user.id];
-      
-      // Calculate equal share
-      splitShare = amount / allSplitters.length;
+    // Basic validation
+    if (!amount || !category || !description) {
+        return res.status(400).json({ success: false, error: 'Amount, category, and description are required' });
     }
 
-    const expense = await Expense.create({
-      user: req.user.id,
-      amount,
+    let splitWithUserIds = [];
+    let splitShare = null; // Initialize as null
+    const creatorId = req.user.id;
+
+    // --- Split Logic ---
+    if (split_with_usernames && Array.isArray(split_with_usernames) && split_with_usernames.length > 0) {
+        // Filter out empty strings and the creator's username if they accidentally included it
+        const validUsernames = split_with_usernames
+            .map(u => u.trim())
+            .filter(u => u && u.toLowerCase() !== req.user.username.toLowerCase());
+
+        if (validUsernames.length > 0) {
+            // Find the User documents for the usernames
+            const usersToSplitWith = await User.find({
+                username: { $in: validUsernames.map(u => u.toLowerCase()) }, // Case-insensitive search
+            });
+
+            // Check if all usernames were found
+            if (usersToSplitWith.length !== validUsernames.length) {
+                const foundUsernames = usersToSplitWith.map(u => u.username);
+                const notFound = validUsernames.filter(u => !foundUsernames.includes(u));
+                return res.status(400).json({ success: false, error: `Could not find users: ${notFound.join(', ')}` });
+            }
+
+            splitWithUserIds = usersToSplitWith.map((user) => user._id);
+
+            // Calculate equal share among creator + others
+            const totalPeople = 1 + splitWithUserIds.length; // Creator + others
+            splitShare = parseFloat((amount / totalPeople).toFixed(2)); // Calculate and round to 2 decimal places
+        }
+    }
+
+
+    const expenseData = {
+      user: creatorId,
+      amount: parseFloat(amount),
       category,
       description,
-      date,
-      split_with: splitWithUserIds,
-      split_share: splitShare,
-    });
+      date: date ? new Date(date) : new Date(), // Use provided date or default to now
+      split_with: splitWithUserIds, // Contains only OTHERS
+      split_share: splitShare,     // Contains the share amount for EVERYONE involved
+    };
 
-    res.status(201).json({
+    const newExpense = await Expense.create(expenseData);
+
+    // Populate the newly created expense before sending back (optional but nice)
+    const populatedExpense = await Expense.findById(newExpense._id)
+        .populate('user', 'name username')
+        .populate('split_with', 'name username');
+
+
+    res.status(201).json({ // 201 Created status
       success: true,
-      data: expense,
+      data: populatedExpense,
     });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, error: 'Server Error' });
+    console.error("Add Expense Error:", err);
+     if (err.name === 'ValidationError') {
+         const messages = Object.values(err.errors).map(val => val.message);
+         return res.status(400).json({ success: false, error: messages.join(', ') });
+     }
+    res.status(500).json({ success: false, error: 'Server Error adding expense' });
   }
 };
+
+// Export functions
+export { getExpenses, addExpense };

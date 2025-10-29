@@ -1,9 +1,9 @@
 // File: server/models/Expense.js
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 const ExpenseSchema = new Schema({
-  user: {
+  user: { // The user who created/paid for the expense
     type: Schema.Types.ObjectId,
     ref: 'User',
     required: true,
@@ -11,6 +11,7 @@ const ExpenseSchema = new Schema({
   description: {
     type: String,
     required: [true, 'Please add a description or item name'],
+    trim: true,
   },
   amount: {
     type: Number,
@@ -19,24 +20,25 @@ const ExpenseSchema = new Schema({
   category: {
     type: String,
     required: [true, 'Please add a category'],
+    trim: true,
   },
   date: {
     type: Date,
     default: Date.now,
   },
   // Simple split logic:
-  // 'split_with' holds users who share this expense.
-  // 'split_share' is the calculated amount each person owes.
-  // We assume an equal split for simplicity here.
-  split_with: [
+  split_with: [ // Array of User ObjectIds involved in the split (excluding creator)
     {
       type: Schema.Types.ObjectId,
       ref: 'User',
     },
   ],
-  split_share: {
+  split_share: { // The calculated amount each person owes (including creator)
     type: Number,
+    // Required only if split_with has entries, but simpler to leave optional
   },
-});
+}, { timestamps: true }); // Adds createdAt and updatedAt
 
-module.exports = mongoose.model('Expense', ExpenseSchema);
+const Expense = mongoose.model('Expense', ExpenseSchema);
+
+export default Expense;

@@ -1,14 +1,16 @@
 // File: server/config/db.js
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const connectDB = async () => {
   try {
+    // useNewUrlParser and useUnifiedTopology are deprecated in newer mongoose versions
+    // Mongoose 6+ handles these automatically.
     const conn = await mongoose.connect(process.env.MONGO_URI);
-    console.log(`MongoDB Connected: ${conn.connection.host}`);
+    console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
   } catch (error) {
-    console.error(`Error: ${error.message}`);
-    process.exit(1);
+    console.error(`❌ Error connecting to MongoDB: ${error.message}`);
+    process.exit(1); // Exit process with failure
   }
 };
 
-module.exports = connectDB;
+export default connectDB;

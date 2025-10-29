@@ -1,12 +1,12 @@
 // File: server/routes/auth.js
-const express = require('express');
-const { register, login, getMe } = require('../controllers/authController');
-const { protect } = require('../middleware/authMiddleware');
+import express from 'express';
+import { register, login, getMe } from '../controllers/authController.js'; // Added .js
+import { protect } from '../middleware/authMiddleware.js'; // Added .js
 
 const router = express.Router();
 
 router.post('/register', register);
 router.post('/login', login);
-router.get('/me', protect, getMe); // A route to check who is logged in
+router.get('/me', protect, getMe); // Route to check logged-in user
 
-module.exports = router;
+export default router;

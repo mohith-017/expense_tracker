@@ -1,10 +1,11 @@
 // File: server/routes/dashboard.js
-const express = require('express');
-const { getDashboardData } = require('../controllers/dashboardController');
-const { protect } = require('../middleware/authMiddleware');
+import express from 'express';
+import { getDashboardData } from '../controllers/dashboardController.js'; // Added .js
+import { protect } from '../middleware/authMiddleware.js'; // Added .js
 
 const router = express.Router();
 
+// Get dashboard data, requires user to be logged in
 router.get('/', protect, getDashboardData);
 
-module.exports = router;
+export default router;

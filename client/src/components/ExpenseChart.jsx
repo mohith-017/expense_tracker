@@ -1,4 +1,3 @@
-// File: client/src/components/ExpenseChart.jsx
 import React from 'react';
 import {
   Chart as ChartJS,
